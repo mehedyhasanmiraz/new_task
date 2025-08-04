@@ -12,6 +12,7 @@ class TaskManagerApp extends StatelessWidget {
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
           titleLarge: TextStyle(fontSize: 24,fontWeight: FontWeight.w600),
+          bodyMedium: TextStyle(fontWeight: FontWeight.w400,color: Colors.grey),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
