@@ -24,7 +24,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: ScreenBackground(
         child: SingleChildScrollView(
           child: Padding(
-
             padding: const EdgeInsets.all(24.0),
             child: Form(
               key: _formKey,

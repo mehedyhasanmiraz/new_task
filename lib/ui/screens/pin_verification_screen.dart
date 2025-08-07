@@ -27,77 +27,80 @@ class _PinVerificationScreen extends State<PinVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Padding(
+        child: SingleChildScrollView(
+          child: Padding(
 
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Pin Verification", style: TextTheme.of(context).titleLarge),
-                SizedBox(height: 10),
-                Text("A 6 digit verification pin has been sent to your email.",style:Theme.of(context).textTheme.bodyMedium,),
-                SizedBox(height: 20),
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 80,),
+                  Text("Pin Verification", style: TextTheme.of(context).titleLarge),
+                  SizedBox(height: 10),
+                  Text("A 6 digit verification pin has been sent to your email.",style:Theme.of(context).textTheme.bodyMedium,),
+                  SizedBox(height: 20),
 
-                PinCodeTextField(
-                  length: 6,
-                  obscureText: false,
-                  animationType: AnimationType.fade,
-                  pinTheme: PinTheme(
-                    shape: PinCodeFieldShape.box,
-                    borderRadius: BorderRadius.circular(5),
-                    fieldHeight: 50,
-                    fieldWidth: 40,
-                    activeFillColor: Colors.white,
-                    activeColor: Colors.white,
-                    selectedFillColor: Colors.white,
-                    inactiveFillColor: Colors.white,
-                    inactiveColor: Colors.grey,
-                  ),
-                  keyboardType: TextInputType.number,
-                  animationDuration: Duration(milliseconds: 300),
-                  backgroundColor: Colors.blue.shade50,
-                  enableActiveFill: true,
-                  // errorAnimationController: errorController,
-                   controller: _pinCodeController,
-                  appContext: context,
-                ),
-                SizedBox(height: 10),
-
-                Container(
-                  height: 50,
-                  child: ElevatedButton(onPressed: _onTapSubmitButton,
-                      child: Text("Verify")),
-                ),
-
-                SizedBox(height: 40),
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Already have an account? ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        TextSpan(text: "Sign In",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green,
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap = _onTapSignInButton,
-                        ),
-                      ],
+                  PinCodeTextField(
+                    length: 6,
+                    obscureText: false,
+                    animationType: AnimationType.fade,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(5),
+                      fieldHeight: 50,
+                      fieldWidth: 40,
+                      activeFillColor: Colors.white,
+                      activeColor: Colors.white,
+                      selectedFillColor: Colors.white,
+                      inactiveFillColor: Colors.white,
+                      inactiveColor: Colors.grey,
                     ),
+                    keyboardType: TextInputType.number,
+                    animationDuration: Duration(milliseconds: 300),
+                    backgroundColor: Colors.blue.shade50,
+                    enableActiveFill: true,
+                    // errorAnimationController: errorController,
+                     controller: _pinCodeController,
+                    appContext: context,
                   ),
-                )
-              ],
+                  SizedBox(height: 10),
+
+                  Container(
+                    height: 50,
+                    child: ElevatedButton(onPressed: _onTapSubmitButton,
+                        child: Text("Verify")),
+                  ),
+
+                  SizedBox(height: 40),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Already have an account? ",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          TextSpan(text: "Sign In",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green,
+                            ),
+                            recognizer: TapGestureRecognizer()..onTap = _onTapSignInButton,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -27,74 +27,77 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Get Started With", style: TextTheme.of(context).titleLarge),
-                SizedBox(height: 10),
-                Text("Login with your email and password",style: Theme.of(context).textTheme.bodyMedium),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailTEController,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(hintText: "Email")),
-                SizedBox(height: 10),
-                TextFormField(
-                    textInputAction: TextInputAction.next,
-                  controller: _passwordTEController,
-                    decoration: InputDecoration(hintText: "Password")),
-                SizedBox(height: 20),
-                Container(
-                  height: 50,
-                  child: ElevatedButton(onPressed: _onTapSubmitButton,
-                      child: Text("Submit")),
-                ),
-
-                SizedBox(height: 40),
-                Center(
-                  child: Column(
-                    children: [
-                      TextButton(
-                        onPressed: onTapForgotPassword,
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-
-
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "Don't have an account? ",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            TextSpan(text: "Sign Up",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.green,
-                              ),
-                              recognizer: TapGestureRecognizer()..onTap = _onTapSignUpButton,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 80,),
+                  Text("Get Started With", style: TextTheme.of(context).titleLarge),
+                  SizedBox(height: 10),
+                  Text("Login with your email and password",style: Theme.of(context).textTheme.bodyMedium),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _emailTEController,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(hintText: "Email")),
+                  SizedBox(height: 10),
+                  TextFormField(
+                      textInputAction: TextInputAction.next,
+                    controller: _passwordTEController,
+                      decoration: InputDecoration(hintText: "Password")),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 50,
+                    child: ElevatedButton(onPressed: _onTapSubmitButton,
+                        child: Text("Submit")),
                   ),
-                )
-              ],
+
+                  SizedBox(height: 40),
+                  Center(
+                    child: Column(
+                      children: [
+                        TextButton(
+                          onPressed: onTapForgotPassword,
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+
+
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Don't have an account? ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              TextSpan(text: "Sign Up",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                ),
+                                recognizer: TapGestureRecognizer()..onTap = _onTapSignUpButton,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
