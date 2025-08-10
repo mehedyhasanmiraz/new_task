@@ -83,7 +83,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   height: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(0),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
