@@ -24,8 +24,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextPage()async{
     await Future.delayed(const Duration(seconds: 2));
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()));
   }
 
 

@@ -1,12 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:new_task/ui/screens/forgot_password_verify_screen.dart';
 import 'package:new_task/ui/screens/main_bottom_nav.dart';
 import 'package:new_task/ui/screens/register_screen.dart';
 import 'package:new_task/ui/widgets/screen_background.dart';
 
-import '../utills/assets_path.dart';
+import '../../data/service/network_client.dart';
+import '../utills/snack_bar_message.dart';
+import '../utills/urls.dart';
+import '../widgets/circular_progress_indicator.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool loginInProgress = false;
 
 
 
@@ -36,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 80,),
+                  SizedBox(height: 100,),
                   Text("Get Started With", style: TextTheme.of(context).titleLarge),
                   SizedBox(height: 10),
                   Text("Login with your email and password",style: Theme.of(context).textTheme.bodyMedium),
@@ -52,10 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordTEController,
                       decoration: InputDecoration(hintText: "Password")),
                   SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     height: 50,
-                    child: ElevatedButton(onPressed: _onTapSubmitButton,
-                        child: Text("Submit")),
+                    child: Visibility(
+                      visible: loginInProgress == false,
+                      replacement: CenterCircularProgressIndicator(),
+                      child: ElevatedButton(onPressed: _onTapSubmitButton,
+                          child: Text("Submit")),
+                    ),
                   ),
 
                   SizedBox(height: 40),
@@ -106,12 +114,46 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onTapSubmitButton(){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()), (pre)=>false);
+    if(_formKey.currentState!.validate()){
+      loginUser();
+    }
   }
 
   void onTapForgotPassword(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordVerifyScreen()));
   }
+  Future<void> loginUser()async{
+    loginInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+
+    };
+
+    NetworkResponse response = await NetworkClient.postRequest(
+      url: Urls.loginUrl,
+      body: requestBody,
+    );
+
+    loginInProgress = false;
+    setState(() {});
+
+    if (response.isSuccess) {
+      clearTextField();
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()), (pre)=>false);
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage, true);
+    }
+  }
+
+  void clearTextField(){
+    _emailTEController.clear();
+    _passwordTEController.clear();
+  }
+
+
   void _onTapSignUpButton(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreen()));
   }

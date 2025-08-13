@@ -7,26 +7,26 @@ class NetworkResponse {
   final bool isSuccess;
   final int statusCode;
   final Map<String, dynamic>? data;
-  final String? errorMessage;
+  final String errorMessage;
 
   NetworkResponse({
     required this.isSuccess,
     required this.statusCode,
     this.data,
-    this.errorMessage = "Something went wrong",
+    this.errorMessage = "Something went wrong! Try again,",
   });
 }
 
 class NetworkClient {
   static final Logger _logger = Logger();
-  
+
   static Future<NetworkResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
       _preRequestLog(url);
       Response response = await get(uri);
       _postRequestLog(url, -response.statusCode, headers: response.headers, responseBody: response.body);
-      
+
       if (response.statusCode == 200) {
         final decodedJson = jsonDecode(response.body);
         return NetworkResponse(
@@ -68,9 +68,12 @@ class NetworkClient {
           data: decodedJson,
         );
       } else {
+        final decodedJson = jsonDecode(response.body);
+        String errorMessage = decodedJson["data"] ?? "Something went wrong!";
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
+          errorMessage: errorMessage,
         );
       }
     } catch (e) {
