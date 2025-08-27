@@ -22,6 +22,8 @@
 // }
 
 
+
+
 class UserModel{
   late final String id;
   late final String firstName;
@@ -29,6 +31,7 @@ class UserModel{
   late final String email;
   late final String mobile;
   late final String photo;
+  late final String createDate;
 
 
   // UserModel();
@@ -42,6 +45,7 @@ class UserModel{
     lastName = jsonData['lastName'] ?? '';
     mobile = jsonData['mobile'] ?? '';
     photo = jsonData['photo'] ?? '';
+    createDate = jsonData['createDate'] ?? '';
   }
 
   Map<String, dynamic> toJson(){

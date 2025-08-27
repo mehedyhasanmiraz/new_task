@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:new_task/ui/screens/new_task_screen.dart';
+import 'package:new_task/data/service/network_client.dart';
+import 'package:new_task/ui/utills/snack_bar_message.dart';
+import 'package:new_task/ui/utills/urls.dart';
 import 'package:new_task/ui/widgets/screen_background.dart';
 import 'package:new_task/ui/widgets/tm_appbar.dart';
 
@@ -10,6 +12,12 @@ class AddNewTaskScreen extends StatefulWidget {
   State<AddNewTaskScreen> createState() => _AddNewTaskScreenState();
 }
 
+final TextEditingController _titleTEController = TextEditingController();
+final TextEditingController _descriptionTEController = TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+bool _addNewTaskInProgress = false;
+
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   @override
   Widget build(BuildContext context) {
@@ -19,41 +27,60 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 80),
-                Text(
-                  "Add New Task",
-                  style: TextTheme.of(context).titleLarge,
-                ),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 80),
+                  Text(
+                    "Add New Task",
+                    style: TextTheme.of(context).titleLarge,
+                  ),
 
-                SizedBox(height: 20),
-                TextFormField(
-                  // controller: _emailTEController,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: "Title"),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  maxLines: 6,
-                  textInputAction: TextInputAction.next,
-                  // controller: _passwordTEController,
-                  decoration: InputDecoration(
-                      hintText: "Description",
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8)
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _titleTEController,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(hintText: "Title"),
+                    validator: (String? value){
+                      if(value?.trim().isEmpty  ?? true){
+                        return "Enter your Title";
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _onTapSubmitButton,
-                    child: Text("Submit"),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    maxLines: 6,
+                    textInputAction: TextInputAction.next,
+                     controller: _descriptionTEController,
+                    decoration: InputDecoration(
+                        hintText: "Description",
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),),
+                    validator: (String? value){
+                      if(value?.trim().isEmpty ?? true){
+                        return "Enter task description";
+                      }
+                      return null;
+                    },
                   ),
-                ),
-              ],
+                  SizedBox(height: 20),
+                  SizedBox(
+                    height: 50,
+                    child: Visibility(
+                      visible: _addNewTaskInProgress == false,
+                      replacement: Center(child: CircularProgressIndicator(),),
+                      child: ElevatedButton(
+                        onPressed: _onTapSubmitButton,
+                        child: Text("Submit"),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -62,10 +89,43 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   }
 
   void _onTapSubmitButton() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => NewTaskScreen()),
-      (pre) => false,
-    );
+    if(_formKey.currentState!.validate()){
+      _addNewTask();
+    }
+
+  }
+
+  Future<void> _addNewTask()async{
+    _addNewTaskInProgress = true;
+    setState(() {});
+
+    Map<String , dynamic> requestBody = {
+      "title": _titleTEController.text.trim(),
+      "description": _descriptionTEController.text.trim(),
+      "status": "New"
+    };
+
+    final NetworkResponse response = await NetworkClient.postRequest(url: Urls.crateTaskUrl, body: requestBody);
+
+    _addNewTaskInProgress = false;
+    setState(() {});
+    if(response.isSuccess){
+      _clearTextFields();
+      ShowSnackBarMessage(context, "New Task Added");
+    }else{
+      ShowSnackBarMessage(context, response.errorMessage);
+    }
+  }
+
+  void _clearTextFields(){
+    _titleTEController.clear();
+    _descriptionTEController.clear();
+  }
+
+  @override
+  void dispose() {
+    _titleTEController.dispose();
+    _descriptionTEController.dispose();
+    super.dispose();
   }
 }

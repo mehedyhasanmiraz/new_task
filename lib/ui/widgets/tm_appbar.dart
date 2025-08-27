@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:new_task/ui/controllers/auth_controller.dart';
 import 'package:new_task/ui/screens/login_screen.dart';
@@ -10,7 +12,9 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
+    TextTheme textTheme = Theme
+        .of(context)
+        .textTheme;
 
     return AppBar(
       backgroundColor: Colors.green,
@@ -25,7 +29,9 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             CircleAvatar(
               radius: 18, // ছোট radius
-              backgroundImage: AssetImage("assets/images/gold.jpg"),
+              backgroundImage: _shouldShowImage(
+                  AuthController.userModel?.photo ?? '') ? MemoryImage(
+                  base64Decode(AuthController.userModel?.photo ?? '')): null,
             ),
             SizedBox(width: 8),
             Expanded(
@@ -34,14 +40,22 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(
                     AuthController.userModel?.fulName ?? 'Unknown',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(
                       color: Colors.white,
                       fontSize: 16,
                     ),
                   ),
                   Text(
                     AuthController.userModel?.email ?? 'Unknown',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
                       color: Colors.white70,
                       fontSize: 12,
                     ),
@@ -60,6 +74,10 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  bool _shouldShowImage(String? photo) {
+    return photo != null && photo.isNotEmpty;
+  }
+
   void _onTapProfileSection(BuildContext context) {
     Navigator.push(
       context,
@@ -67,12 +85,12 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Future<void> _onTapLogoutButton(BuildContext context) async{
+  Future<void> _onTapLogoutButton(BuildContext context) async {
     await AuthController.clearUserInformation();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LoginScreen()),
-      (predicate) => false,
+          (predicate) => false,
     );
   }
 
