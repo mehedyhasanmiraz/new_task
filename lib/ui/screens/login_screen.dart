@@ -1,5 +1,8 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:new_task/data/models/login_model.dart';
+import 'package:new_task/ui/controllers/auth_controller.dart';
 import 'package:new_task/ui/screens/forgot_password_verify_screen.dart';
 import 'package:new_task/ui/screens/main_bottom_nav.dart';
 import 'package:new_task/ui/screens/register_screen.dart';
@@ -49,12 +52,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailTEController,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(hintText: "Email")),
+                      decoration: InputDecoration(hintText: "Email"),
+                    validator: (String? value) {
+                      String email = value?.trim() ?? "";
+                      if (EmailValidator.validate(email) == false) {
+                        return "Enter valid Email";
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
                   SizedBox(height: 10),
                   TextFormField(
+                    obscureText: true,
                       textInputAction: TextInputAction.next,
                     controller: _passwordTEController,
-                      decoration: InputDecoration(hintText: "Password")),
+                      decoration: InputDecoration(hintText: "Password"),
+                    validator: (String? value) {
+                      if ((value?.trim().isEmpty ?? true) ||
+                          value!.length < 4) {
+                        return "Enter valid Password more than 6 character";
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
                   SizedBox(height: 20),
                   SizedBox(
                     height: 50,
@@ -141,17 +163,22 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
 
     if (response.isSuccess) {
-      clearTextField();
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()), (pre)=>false);
+      // clearTextField();
+
+      LoginModel loginModel = LoginModel.fromJson(response.data!);
+      /// TODO: save token to local
+      await AuthController.saveUserInformation(loginModel.token, loginModel.userModel);
+      /// TODO: Logged in/or not
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()), (predicate)=>false);
     } else {
       ShowSnackBarMessage(context, response.errorMessage, true);
     }
   }
 
-  void clearTextField(){
-    _emailTEController.clear();
-    _passwordTEController.clear();
-  }
+  // void clearTextField(){
+  //   _emailTEController.clear();
+  //   _passwordTEController.clear();
+  // }
 
 
   void _onTapSignUpButton(){

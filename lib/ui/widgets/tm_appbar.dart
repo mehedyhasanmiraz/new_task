@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:new_task/ui/controllers/auth_controller.dart';
+import 'package:new_task/ui/screens/login_screen.dart';
 import 'package:new_task/ui/screens/update_profile_screen.dart';
 
-class TMAppbar extends StatelessWidget implements PreferredSizeWidget{
-
+class TMAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool? fromProfileScreen;
 
-  const TMAppbar({
-    super.key, this.fromProfileScreen,
-  });
+  const TMAppbar({super.key, this.fromProfileScreen});
 
   @override
   Widget build(BuildContext context) {
-
     TextTheme textTheme = Theme.of(context).textTheme;
 
     return AppBar(
       backgroundColor: Colors.green,
       title: GestureDetector(
-        onTap: (){
-          if(fromProfileScreen?? false){
-            return ;
+        onTap: () {
+          if (fromProfileScreen ?? false) {
+            return;
           }
           _onTapProfileSection(context);
         },
@@ -35,31 +33,47 @@ class TMAppbar extends StatelessWidget implements PreferredSizeWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Mehedy Hasan Miraz",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(color: Colors.white, fontSize: 16),
+                    AuthController.userModel?.fulName ?? 'Unknown',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                   Text(
-                    "mirazmehedi065@gmail.com",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.white70, fontSize: 12),
+                    AuthController.userModel?.email ?? 'Unknown',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
+
             ),
-            IconButton(onPressed: (){}, icon: Icon(Icons.logout,color: Colors.white,))
+            IconButton(
+              onPressed: () => _onTapLogoutButton(context),
+              icon: Icon(Icons.logout, color: Colors.white),
+            ),
           ],
         ),
       ),
     );
   }
-  
-  void _onTapProfileSection(BuildContext context){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateProfileScreen()));
+
+  void _onTapProfileSection(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UpdateProfileScreen()),
+    );
+  }
+
+  Future<void> _onTapLogoutButton(BuildContext context) async{
+    await AuthController.clearUserInformation();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (predicate) => false,
+    );
   }
 
   @override
