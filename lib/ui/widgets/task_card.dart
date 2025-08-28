@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_task/data/models/task_model.dart';
 
 
 enum TaskStatus{
@@ -10,9 +11,10 @@ enum TaskStatus{
 
 class TaskCard extends StatelessWidget {
   final TaskStatus  taskStatus;
+  final TaskModel taskModel;
 
    TaskCard({
-    super.key, required this.taskStatus,
+    super.key, required this.taskStatus, required this.taskModel,
   });
 
   @override
@@ -27,22 +29,21 @@ class TaskCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Lorem Ipsum text ",
+              taskModel.title,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,color: Colors.black),
             ),
             SizedBox(height: 5),
             Text(
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley. ",
-            ),
+              taskModel.description            ),
             SizedBox(height: 20,),
 
-            Text("Date: 06/08/2025"),
+            Text("Date: ${taskModel.createdDate}"),
             SizedBox(height: 5,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  label: Text("New",style: TextStyle(color: Colors.white),),
+                  label: Text(taskModel.status,style: TextStyle(color: Colors.white),),
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(30)),
                   side: BorderSide.none,

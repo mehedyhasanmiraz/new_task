@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:new_task/data/models/task_list_model.dart';
+import 'package:new_task/data/models/task_model.dart';
 import 'package:new_task/data/models/task_status_count_list_model.dart';
 import 'package:new_task/data/service/network_client.dart';
 import 'package:new_task/ui/screens/add_new_task_screen.dart';
@@ -21,12 +23,15 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
 
-  bool _geStatusCountInProgress = false;
+  bool _getStatusCountInProgress = false;
   List<TaskStatusCountModel> _taskStatusCountList = [];
+  bool _getNewTaskInProgress = false;
+  List<TaskModel> _newTaskList = [];
 
   @override
   void initState() {
     _getListStatusCount();
+    _getAllNewTaskList();
     super.initState();
   }
 
@@ -36,14 +41,28 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            buildSummerySection(),
-            ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return TaskCard(taskStatus: TaskStatus.sNew);
-              },
-              separatorBuilder: (context, index) => SizedBox(height: 8),
-              itemCount: 10,
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Visibility(
+                visible: _getStatusCountInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator(),),
+                  child: buildSummerySection()
+              ),
+            ),
+            SizedBox(
+              height: 600,
+              child: Visibility(
+                visible: _getNewTaskInProgress == false,
+                replacement: Center(child: CircularProgressIndicator(),),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return TaskCard(taskStatus: TaskStatus.sNew, taskModel: _newTaskList[index],);
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 8),
+                  itemCount: _newTaskList.length,
+                ),
+              ),
             ),
           ],
         ),
@@ -85,7 +104,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   Future<void> _getListStatusCount() async {
-    _geStatusCountInProgress = true;
+    _getStatusCountInProgress = true;
     setState(() {});
     NetworkResponse response = await NetworkClient.getRequest(
       url: Urls.taskStatusCountUrl,
@@ -97,7 +116,25 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     } else {
       ShowSnackBarMessage(context, response.errorMessage, true);
     }
-    _geStatusCountInProgress = false;
+    _getStatusCountInProgress = false;
+    setState(() {});
+  }
+
+
+  Future<void> _getAllNewTaskList() async {
+    _getNewTaskInProgress = true;
+    setState(() {});
+    NetworkResponse response = await NetworkClient.getRequest(
+      url: Urls.newTaskListUrl,
+    );
+    if (response.isSuccess) {
+      TaskListModel taskListModel =
+          TaskListModel.fromJson(response.data ?? {});
+      _newTaskList = taskListModel.taskList;
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage, true);
+    }
+    _getNewTaskInProgress = false;
     setState(() {});
   }
 }
