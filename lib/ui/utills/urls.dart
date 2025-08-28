@@ -4,4 +4,5 @@ class Urls {
   static const String loginUrl = "$_baseUrl/Login"; // ✅ lowercase
   static const String updateProfileUrl = "$_baseUrl/ProfileUpdate"; // ✅ lowercase
   static const String crateTaskUrl = "$_baseUrl/createTask"; // ✅ lowercase
+  static const String taskStatusCountUrl = "$_baseUrl/taskStatusCount"; // ✅ lowercase
 }
