@@ -18,4 +18,6 @@ class Urls {
 
   static String updateTaskStatusUrl(String taskId, String status) =>
       "$_baseUrl/updateTaskStatus/$taskId/$status"; // ✅ lowercase
+  static String deleteTaskUrl(String taskId,) =>
+      "$_baseUrl/deleteTask/$taskId"; // ✅ lowercase
 }

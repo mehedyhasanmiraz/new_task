@@ -18,7 +18,7 @@ class TaskCard extends StatefulWidget {
 }
 
 class _TaskCardState extends State<TaskCard> {
-  bool inProgress = false;
+  bool _inProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,18 +63,16 @@ class _TaskCardState extends State<TaskCard> {
                 Spacer(),
 
                Visibility(
-                 visible: inProgress == false,
+                 visible: _inProgress == false,
                  replacement: Center(child: CircularProgressIndicator(),),
                  child: Row(
                    children: [
                     IconButton(
-                     onPressed: () {
-                       _showUpdateStatusDialogue();
-                     },
+                     onPressed: _showUpdateStatusDialogue,
                      icon: Icon(Icons.edit, color: Colors.blue),
                    ),
                     IconButton(
-                     onPressed: () {},
+                     onPressed: _deleteTask,
                      icon: Icon(Icons.delete, color: Colors.red),
                    ),
                  ],),
@@ -105,6 +103,8 @@ class _TaskCardState extends State<TaskCard> {
     }
     return color;
   }
+
+
 
   void _showUpdateStatusDialogue() {
     showDialog(
@@ -165,11 +165,25 @@ class _TaskCardState extends State<TaskCard> {
   bool isSelected(String status) => widget.taskModel.status == status;
 
   Future<void> _changeTaskStatus(String status) async {
-    inProgress = true;
+    _inProgress = true;
     setState(() {});
     final NetworkResponse response = await NetworkClient.getRequest(
       url: Urls.updateTaskStatusUrl(widget.taskModel.id, status),);
-    inProgress = false;
+    _inProgress = false;
+    if(response.isSuccess){
+      widget.refreshList();
+    }else{
+      setState(() {});
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+  }
+
+  Future<void> _deleteTask() async {
+    _inProgress = true;
+    setState(() {});
+    final NetworkResponse response = await NetworkClient.getRequest(
+      url: Urls.deleteTaskUrl(widget.taskModel.id),);
+    _inProgress = false;
     if(response.isSuccess){
       widget.refreshList();
     }else{
