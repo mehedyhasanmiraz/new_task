@@ -37,7 +37,9 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
         itemBuilder: (context, index){
           return TaskCard(
                 taskStatus: TaskStatus.progress,
-                taskModel: _progressTaskList[index],);
+                taskModel: _progressTaskList[index],
+                refreshList: _getAllProgressTaskList,
+          );
       },
       separatorBuilder: (context, index)=>SizedBox(height: 8),
 
@@ -56,7 +58,7 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
       TaskListModel.fromJson(response.data ?? {});
       _progressTaskList = taskListModel.taskList;
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
     _getProgressTaskInProgress = false;
     setState(() {});

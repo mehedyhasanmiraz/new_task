@@ -18,11 +18,7 @@ class NewTaskScreen extends StatefulWidget {
   State<NewTaskScreen> createState() => _NewTaskScreenState();
 }
 
-
-
-
 class _NewTaskScreenState extends State<NewTaskScreen> {
-
   bool _getStatusCountInProgress = false;
   List<TaskStatusCountModel> _taskStatusCountList = [];
   bool _getNewTaskInProgress = false;
@@ -39,32 +35,39 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Visibility(
-                visible: _getStatusCountInProgress == false,
-                  replacement: Center(child: CircularProgressIndicator(),),
-                  child: buildSummerySection()
-              ),
-            ),
-            SizedBox(
-              height: 600,
-              child: Visibility(
-                visible: _getNewTaskInProgress == false,
-                replacement: Center(child: CircularProgressIndicator(),),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return TaskCard(taskStatus: TaskStatus.sNew, taskModel: _newTaskList[index],);
-                  },
-                  separatorBuilder: (context, index) => SizedBox(height: 8),
-                  itemCount: _newTaskList.length,
+        child: RefreshIndicator(
+          onRefresh:  _getAllNewTaskList,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Visibility(
+                  visible: _getStatusCountInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: buildSummerySection(),
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 600,
+                child: Visibility(
+                  visible: _getNewTaskInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        taskStatus: TaskStatus.sNew,
+                        taskModel: _newTaskList[index],
+                        refreshList: _getAllNewTaskList,
+                      );
+                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 8),
+                    itemCount: _newTaskList.length,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -98,8 +101,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             );
           },
         ),
-      )
-
+      ),
     );
   }
 
@@ -114,12 +116,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           TaskStatusCountListModel.fromJson(response.data ?? {});
       _taskStatusCountList = taskStatusCountListModel.statusCountList;
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
     _getStatusCountInProgress = false;
     setState(() {});
   }
-
 
   Future<void> _getAllNewTaskList() async {
     _getNewTaskInProgress = true;
@@ -128,11 +129,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       url: Urls.newTaskListUrl,
     );
     if (response.isSuccess) {
-      TaskListModel taskListModel =
-          TaskListModel.fromJson(response.data ?? {});
+      TaskListModel taskListModel = TaskListModel.fromJson(response.data ?? {});
       _newTaskList = taskListModel.taskList;
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
     _getNewTaskInProgress = false;
     setState(() {});

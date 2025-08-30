@@ -15,7 +15,6 @@ class CompleteTaskScreen extends StatefulWidget {
 }
 
 class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
-
   bool _getCompleteTaskInProgress = false;
   List<TaskModel> _completeTaskList = [];
 
@@ -27,18 +26,21 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Visibility(
+    return Visibility(
       visible: _getCompleteTaskInProgress == false,
-      replacement: Center(child: CircularProgressIndicator(),),
+      replacement: Center(child: CircularProgressIndicator()),
       child: ListView.separated(
         itemCount: _completeTaskList.length,
         shrinkWrap: true,
         primary: false,
-        itemBuilder: (context, index){
-          return TaskCard(taskStatus: TaskStatus.completed, taskModel: _completeTaskList[index],);
+        itemBuilder: (context, index) {
+          return TaskCard(
+            taskStatus: TaskStatus.completed,
+            taskModel: _completeTaskList[index],
+            refreshList: _getAllCompleteTaskList,
+          );
         },
-        separatorBuilder: (context, index)=>SizedBox(height: 8),
-
+        separatorBuilder: (context, index) => SizedBox(height: 8),
       ),
     );
   }
@@ -50,11 +52,10 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
       url: Urls.completeTaskUrl,
     );
     if (response.isSuccess) {
-      TaskListModel taskListModel =
-      TaskListModel.fromJson(response.data ?? {});
+      TaskListModel taskListModel = TaskListModel.fromJson(response.data ?? {});
       _completeTaskList = taskListModel.taskList;
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
     _getCompleteTaskInProgress = false;
     setState(() {});

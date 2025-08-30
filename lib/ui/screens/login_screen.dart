@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
       /// TODO: Logged in/or not
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()), (predicate)=>false);
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
   }
 

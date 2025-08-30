@@ -235,9 +235,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (response.isSuccess) {
 
       _passwordTEController.clear();
-      ShowSnackBarMessage(context, "User data updated Successfully");
+      showSnackBarMessage(context, "User data updated Successfully");
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
   }
 

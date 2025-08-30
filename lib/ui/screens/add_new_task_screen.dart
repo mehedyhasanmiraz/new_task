@@ -12,13 +12,17 @@ class AddNewTaskScreen extends StatefulWidget {
   State<AddNewTaskScreen> createState() => _AddNewTaskScreenState();
 }
 
-final TextEditingController _titleTEController = TextEditingController();
-final TextEditingController _descriptionTEController = TextEditingController();
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-bool _addNewTaskInProgress = false;
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
+
+  final TextEditingController _titleTEController = TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _addNewTaskInProgress = false;
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,9 +115,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     setState(() {});
     if(response.isSuccess){
       _clearTextFields();
-      ShowSnackBarMessage(context, "New Task Added");
+      showSnackBarMessage(context, "New Task Added");
     }else{
-      ShowSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, response.errorMessage);
     }
   }
 

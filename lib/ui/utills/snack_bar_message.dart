@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void ShowSnackBarMessage(
+void showSnackBarMessage(
     BuildContext context,
     String message, [
       bool isError = false,

@@ -194,9 +194,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (response.isSuccess) {
       clearTextField();
-      ShowSnackBarMessage(context, "Registration Successfully");
+      showSnackBarMessage(context, "Registration Successfully");
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
   }
 

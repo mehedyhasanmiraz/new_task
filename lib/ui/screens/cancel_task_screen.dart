@@ -15,7 +15,6 @@ class CancelTaskScreen extends StatefulWidget {
 }
 
 class _CancelTaskScreenState extends State<CancelTaskScreen> {
-
   bool _getCancelledTaskInProgress = false;
   List<TaskModel> _cancelledTaskList = [];
 
@@ -29,20 +28,23 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
   Widget build(BuildContext context) {
     return Visibility(
       visible: _getCancelledTaskInProgress == false,
-      replacement: Center(child: CircularProgressIndicator(),),
+      replacement: Center(child: CircularProgressIndicator()),
       child: ListView.separated(
         itemCount: _cancelledTaskList.length,
         shrinkWrap: true,
         primary: false,
-        itemBuilder: (context, index){
-          return TaskCard(taskStatus: TaskStatus.cancelled, taskModel: _cancelledTaskList[index], );
+        itemBuilder: (context, index) {
+          return TaskCard(
+            taskStatus: TaskStatus.cancelled,
+            taskModel: _cancelledTaskList[index],
+            refreshList: _getAllCancelledTaskList,
+          );
         },
-        separatorBuilder: (context, index)=>SizedBox(height: 8),
-
+        separatorBuilder: (context, index) => SizedBox(height: 8),
       ),
     );
-
   }
+
   Future<void> _getAllCancelledTaskList() async {
     _getCancelledTaskInProgress = true;
     setState(() {});
@@ -50,11 +52,10 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
       url: Urls.cancelledTaskUrl,
     );
     if (response.isSuccess) {
-      TaskListModel taskListModel =
-      TaskListModel.fromJson(response.data ?? {});
+      TaskListModel taskListModel = TaskListModel.fromJson(response.data ?? {});
       _cancelledTaskList = taskListModel.taskList;
     } else {
-      ShowSnackBarMessage(context, response.errorMessage, true);
+      showSnackBarMessage(context, response.errorMessage, true);
     }
     _getCancelledTaskInProgress = false;
     setState(() {});
