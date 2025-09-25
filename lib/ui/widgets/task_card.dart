@@ -11,7 +11,7 @@ class TaskCard extends StatefulWidget {
   final TaskModel taskModel;
   final VoidCallback refreshList;
 
-  TaskCard({super.key, required this.taskStatus, required this.taskModel, required this.refreshList});
+  const TaskCard({super.key, required this.taskStatus, required this.taskModel, required this.refreshList});
 
   @override
   State<TaskCard> createState() => _TaskCardState();
